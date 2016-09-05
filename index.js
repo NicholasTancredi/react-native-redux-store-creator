@@ -4,18 +4,20 @@ const combineReducers = redux.combineReducers
 const applyMiddleware = redux.applyMiddleware
 const compose = redux.compose
 
-const thunk = require('redux-thunk')
+const thunk = require('redux-thunk').default
 const createLogger = require('redux-logger')
 const constants = require('redux-persist/constants')
 const REHYDRATE = constants.REHYDRATE
 
-const ReactNative = require('react-native')
-const AsyncStorage = ReactNative.AsyncStorage
+// const ReactNative = require('react-native')
+// const AsyncStorage = ReactNative.AsyncStorage
 
 const createActionBuffer = require('redux-action-buffer')
+
 const reduxPersist = require('redux-persist')
 const persistStore = reduxPersist.persistStore
 const autoRehydrate = reduxPersist.autoRehydrate
+console.log(persistStore)
 
 const storeCreator = (reducers, options) => {
     if (process.env.NODE_ENV !== 'production') {
@@ -36,9 +38,9 @@ const storeCreator = (reducers, options) => {
 	const logger = options.logger
 	const purgeAll = options.purgeAll
 	const purgeKeys = options.purgeKeys
-	const persistStore = options.persistStore
-	const persistStoreOptions = Object.create({storage: AsyncStorage}, persistStore)
-
+	const persistStoreOptions = options.persistStore
+	// Object.create({storage: AsyncStorage}, persistStore)
+	// const loggerObject = Object.create(, logger)
 	const store = createStore(
 		combineReducers(reducers),
 		undefined,
@@ -46,7 +48,9 @@ const storeCreator = (reducers, options) => {
 			autoRehydrate(),
 			applyMiddleware(thunk,
 				createActionBuffer(REHYDRATE),
-				createLogger(Object.create({collapsed: () => true}, logger))
+				createLogger(
+					{collapsed: () => true}
+				)
 			)
 		)
 	)
@@ -61,5 +65,15 @@ const storeCreator = (reducers, options) => {
 
 	return store
 }
-
+console.log('test', storeCreator({
+	test: (state, action) => {
+		if (state === undefined) state = 'test'
+	    switch (action.type) {
+	        case 'UPDATE':
+	            return action.payload
+	        default:
+	            return state
+	    }
+	}
+}))
 module.exports = storeCreator
