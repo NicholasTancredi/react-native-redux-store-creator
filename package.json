@@ -1,6 +1,6 @@
 {
   "name": "react-native-redux-store-creator",
-  "version": "0.0.21",
+  "version": "0.0.3",
   "description": "A react native redux store creator with sensible defaults.",
   "main": "./index.js",
   "scripts": {

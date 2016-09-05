@@ -9,8 +9,8 @@ const createLogger = require('redux-logger')
 const constants = require('redux-persist/constants')
 const REHYDRATE = constants.REHYDRATE
 
-// const ReactNative = require('react-native')
-// const AsyncStorage = ReactNative.AsyncStorage
+const ReactNative = require('react-native')
+const AsyncStorage = ReactNative.AsyncStorage
 
 const createActionBuffer = require('redux-action-buffer')
 
@@ -38,9 +38,8 @@ const storeCreator = (reducers, options) => {
 	const logger = options.logger
 	const purgeAll = options.purgeAll
 	const purgeKeys = options.purgeKeys
-	const persistStoreOptions = options.persistStore
-	// Object.create({storage: AsyncStorage}, persistStore)
-	// const loggerObject = Object.create(, logger)
+	const persistStoreOptions =  Object.create({storage: AsyncStorage}, options.persistStore)
+	const loggerObject = Object.create(collapsed: () => true, logger)
 	const store = createStore(
 		combineReducers(reducers),
 		undefined,
@@ -48,9 +47,7 @@ const storeCreator = (reducers, options) => {
 			autoRehydrate(),
 			applyMiddleware(thunk,
 				createActionBuffer(REHYDRATE),
-				createLogger(
-					{collapsed: () => true}
-				)
+				createLogger(loggerObject)
 			)
 		)
 	)
