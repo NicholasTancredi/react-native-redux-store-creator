@@ -14,13 +14,13 @@ import createActionBuffer from 'redux-action-buffer'
 import {autoRehydrate, persistStore} from 'redux-persist'
 
 export default (
-	reducers,
-	persistStoreOptions = {},
-	loggerOptions = {
-		collapsed: () => true,
-	},
-    storage = AsyncStorage,
-) => {
+	reducers, options = {
+	persistStore: {},
+    storage: AsyncStorage,
+    purgeKeys: [],
+    purgeAll: false,
+	logger: {},
+}) => {
     if (process.env.NODE_ENV !== 'production') {
 		if (!reducers || Object.keys(reducers).length === 0) {
 			console.error(
@@ -29,6 +29,14 @@ export default (
 		}
 	}
 
+    const {
+        logger,
+        purgeAll,
+        purgeKeys,
+        storage,
+        persistStore,
+    } = options
+
 	const store = createStore(
 		combineReducers(reducers),
 		undefined,
@@ -36,12 +44,18 @@ export default (
 			autoRehydrate(),
 			applyMiddleware(thunk,
 				createActionBuffer(REHYDRATE),
-				createLogger(loggerOptions),
+				createLogger({collapsed: () => true, ...logger}),
 			)
 		)
 	)
 
-	persistStore(store, {storage, ...persistStoreOptions})
+    if (purgeAll) {
+    	persistStore(store, {storage, ...persistStore}).purge()
+    } else if (purgeKeys.length) {
+        persistStore(store, {storage, ...persistStore}).purge(purgeKeys)
+    } else {
+    	persistStore(store, {storage, ...persistStore})
+    }
 
 	return store
 }
