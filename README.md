@@ -1,9 +1,9 @@
 # react-native-redux-store-creator
 ------
-##### Required arguments:
+### Required arguments:
 The reducers argument is passed to the combineReducers method from redux http://redux.js.org/docs/api/combineReducers.html
 
-##### Optional arguments:
+### Optional arguments:
 persistStore, purgeKeys, purgeAll are from persistStore https://github.com/rt2zz/redux-persist
 
 **persistStore**: The options object passed to persistStore. *Defaults to an empty Object.*
