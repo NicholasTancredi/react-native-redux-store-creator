@@ -1,25 +1,23 @@
-import {
-	createStore,
-	combineReducers,
-	applyMiddleware,
-	compose
-} from 'redux'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
-import {REHYDRATE} from 'redux-persist/constants'
+const redux = require('redux')
+const createStore = redux.createStore
+const combineReducers = redux.combineReducers
+const applyMiddleware = redux.applyMiddleware
+const compose = redux.compose
 
-import {AsyncStorage} from 'react-native'
+const thunk = require('redux-thunk')
+const createLogger = require('redux-logger')
+const constants = require('redux-persist/constants')
+const REHYDRATE = constants.REHYDRATE
 
-import createActionBuffer from 'redux-action-buffer'
-import {autoRehydrate, persistStore} from 'redux-persist'
+const ReactNative = require('react-native')
+const AsyncStorage = ReactNative.AsyncStorage
 
-export default (
-	reducers, options = {
-	persistStore: {},
-    purgeKeys: [],
-    purgeAll: false,
-	logger: {},
-}) => {
+const createActionBuffer = require('redux-action-buffer')
+const reduxPersist = require('redux-persist')
+const persistStore = reduxPersist.persistStore
+const autoRehydrate = reduxPersist.autoRehydrate
+
+const storeCreator = (reducers, options) => {
     if (process.env.NODE_ENV !== 'production') {
 		if (!reducers || Object.keys(reducers).length === 0) {
 			console.error(
@@ -28,12 +26,18 @@ export default (
 		}
 	}
 
-    const {
-        logger,
-        purgeAll,
-        purgeKeys,
-        persistStore,
-    } = options
+	options = Object.create({
+		persistStore: {},
+	    purgeKeys: [],
+	    purgeAll: false,
+		logger: {},
+	}, options)
+
+	const logger = options.logger
+	const purgeAll = options.purgeAll
+	const purgeKeys = options.purgeKeys
+	const persistStore = options.persistStore
+	const persistStoreOptions = Object.create({storage: AsyncStorage}, persistStore)
 
 	const store = createStore(
 		combineReducers(reducers),
@@ -42,18 +46,20 @@ export default (
 			autoRehydrate(),
 			applyMiddleware(thunk,
 				createActionBuffer(REHYDRATE),
-				createLogger({collapsed: () => true, ...logger}),
+				createLogger(Object.create({collapsed: () => true}, logger))
 			)
 		)
 	)
 
     if (purgeAll) {
-    	persistStore(store, {storage: AsyncStorage, ...persistStore}).purge()
+    	persistStore(store, persistStoreOptions).purge()
     } else if (purgeKeys.length) {
-        persistStore(store, {storage: AsyncStorage, ...persistStore}).purge(purgeKeys)
+        persistStore(store, persistStoreOptions).purge(purgeKeys)
     } else {
-    	persistStore(store, {storage: AsyncStorage, ...persistStore})
+    	persistStore(store, persistStoreOptions)
     }
 
 	return store
 }
+
+module.exports = storeCreator
