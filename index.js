@@ -16,7 +16,6 @@ import {autoRehydrate, persistStore} from 'redux-persist'
 export default (
 	reducers, options = {
 	persistStore: {},
-    storage: AsyncStorage,
     purgeKeys: [],
     purgeAll: false,
 	logger: {},
@@ -33,7 +32,6 @@ export default (
         logger,
         purgeAll,
         purgeKeys,
-        storage,
         persistStore,
     } = options
 
@@ -50,11 +48,11 @@ export default (
 	)
 
     if (purgeAll) {
-    	persistStore(store, {storage, ...persistStore}).purge()
+    	persistStore(store, {storage: AsyncStorage, ...persistStore}).purge()
     } else if (purgeKeys.length) {
-        persistStore(store, {storage, ...persistStore}).purge(purgeKeys)
+        persistStore(store, {storage: AsyncStorage, ...persistStore}).purge(purgeKeys)
     } else {
-    	persistStore(store, {storage, ...persistStore})
+    	persistStore(store, {storage: AsyncStorage, ...persistStore})
     }
 
 	return store

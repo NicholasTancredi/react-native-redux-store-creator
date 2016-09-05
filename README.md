@@ -4,11 +4,16 @@
 The reducers argument is passed to the combineReducers method from redux http://redux.js.org/docs/api/combineReducers.html
 
 ##### Optional arguments:
-persistStoreOptions from persistStore https://github.com/rt2zz/redux-persist
+persistStore, purgeKeys, purgeAll, storage, are from persistStore https://github.com/rt2zz/redux-persist
 
-loggerOptions from https://github.com/evgenyrodionov/redux-logger
+**persistStore**: The options object passed to persistStore. *Defaults to an empty Object.*
 
-storage for persistStore defaults to AsyncStorage from React Native
+**purgeKeys**: An array of keys to be purged from storage. *Defaults to an empty Array.*
+
+**purgeAll**: Boolean value to purge all keys. *Defaults to false.*
+
+logger is from https://github.com/evgenyrodionov/redux-logger
+
 
 ------
 
@@ -30,9 +35,7 @@ const store = storeCreator(reducers, {
     persistStore: {
         blacklist: ['someTransientReducer']
     },
-    storage: localStorage,
     purgeKeys: ['reducerName'],
-    purgeAll: true,
     logger: {
         collapsed: () => false
     },
