@@ -1,0 +1,33 @@
+{
+  "name": "react-native-redux-store-creator",
+  "version": "0.0.1",
+  "description": "A react native redux store creator with sensible defaults.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+      "react-native": "^0.32.0",
+      "redux": "^3.5.2",
+      "redux-action-buffer": "^1.0.1",
+      "redux-logger": "^2.6.1",
+      "redux-persist": "^3.5.0",
+      "redux-thunk": "^2.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w0251251/react-native-redux-store-creator.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "redux",
+    "store"
+  ],
+  "author": "nicholas tancredi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/w0251251/react-native-redux-store-creator/issues"
+  },
+  "homepage": "https://github.com/w0251251/react-native-redux-store-creator#readme"
+}
