@@ -17,7 +17,6 @@ const createActionBuffer = require('redux-action-buffer')
 const reduxPersist = require('redux-persist')
 const persistStore = reduxPersist.persistStore
 const autoRehydrate = reduxPersist.autoRehydrate
-console.log(persistStore)
 
 const storeCreator = (reducers, options) => {
     if (process.env.NODE_ENV !== 'production') {
@@ -38,8 +37,12 @@ const storeCreator = (reducers, options) => {
 	const logger = options.logger
 	const purgeAll = options.purgeAll
 	const purgeKeys = options.purgeKeys
-	const persistStoreOptions =  Object.create({storage: AsyncStorage}, options.persistStore)
-	const loggerObject = Object.create(collapsed: () => true, logger)
+	const persistStoreOptions =  Object.create(
+		{storage: AsyncStorage},
+		options.persistStore
+	)
+	const loggerOptions = Object.create({collapsed: () => true}, logger)
+
 	const store = createStore(
 		combineReducers(reducers),
 		undefined,
@@ -47,7 +50,7 @@ const storeCreator = (reducers, options) => {
 			autoRehydrate(),
 			applyMiddleware(thunk,
 				createActionBuffer(REHYDRATE),
-				createLogger(loggerObject)
+				createLogger(loggerOptions)
 			)
 		)
 	)
